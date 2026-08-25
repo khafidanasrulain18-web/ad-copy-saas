@@ -1,17 +1,16 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-// Kredensial HANYA di backend, sama seperti prinsip OpenAI/Midtrans key
-export const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+// API key HANYA di backend, sama seperti prinsip OpenAI/Midtrans key
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Ganti FROM_EMAIL setelah domain kamu terverifikasi di Resend.
+// Selama masih pakai domain testing, email hanya akan terkirim ke alamat
+// yang kamu pakai daftar akun Resend (batasan mode testing/sandbox mereka).
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'AdCopy <onboarding@resend.dev>';
 
 export async function sendOtpEmail(to, code) {
-  await transporter.sendMail({
-    from: `"AdCopy" <${process.env.GMAIL_USER}>`,
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
     to,
     subject: `${code} adalah kode verifikasi AdCopy kamu`,
     html: `
@@ -23,4 +22,10 @@ export async function sendOtpEmail(to, code) {
       </div>
     `,
   });
+
+  if (error) {
+    // Lempar sebagai Error biasa supaya tertangkap try-catch di routes/auth.js,
+    // sama seperti perilaku nodemailer sebelumnya
+    throw new Error(error.message || 'Gagal mengirim email via Resend.');
+  }
 }
