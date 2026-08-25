@@ -8,7 +8,9 @@ import {
 } from '../middleware/validators.js';
 import { generateOtp, otpExpiry } from '../utils/otp.js';
 import { sendOtpEmail } from '../utils/mailer.js';
-
+import { sendResetPasswordEmail } from '../utils/mailer.js';
+import { forgotPasswordValidators } from '../middleware/validators.js';
+import { resetPasswordValidators } from '../middleware/validators.js';
 const router = express.Router();
 
 function issueToken(user) {
@@ -168,6 +170,62 @@ router.get('/me', async (req, res) => {
     res.json({ success: true, message: 'Token valid.', data: { user: { id: decoded.userId, email: decoded.email } } });
   } catch {
     res.status(401).json({ success: false, message: 'Token tidak valid.', data: null });
+  }
+});
+// ... (semua route sebelumnya: register, verify-email, resend-otp, login, me — TETAP SAMA seperti Tahap 11) ...
+
+// --- FORGOT PASSWORD — kirim OTP reset ---
+router.post('/forgot-password', authLimiter, forgotPasswordValidators, handleValidation, async (req, res) => {
+  try {
+    const { email } = req.body;
+    const result = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const user = result.rows[0];
+
+    // Pesan digeneralisasi — sama seperti resend-otp, cegah user enumeration
+    if (!user) {
+      return res.json({ success: true, message: 'Kalau email terdaftar, kode reset sudah dikirim.', data: null });
+    }
+
+    const code = generateOtp();
+    const expiresAt = otpExpiry(10);
+    await pool.query('UPDATE users SET reset_otp = $1, reset_otp_expires_at = $2 WHERE id = $3', [code, expiresAt, user.id]);
+
+    await sendResetPasswordEmail(email, code);
+
+    res.json({ success: true, message: 'Kalau email terdaftar, kode reset sudah dikirim.', data: null });
+  } catch (err) {
+    console.error('🔴 Forgot password error:', err.message);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server.', data: null });
+  }
+});
+
+// --- RESET PASSWORD — verifikasi kode, set password baru ---
+router.post('/reset-password', authLimiter, resetPasswordValidators, handleValidation, async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Kode reset tidak valid.', data: null });
+    }
+    if (!user.reset_otp || !user.reset_otp_expires_at || new Date(user.reset_otp_expires_at) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Kode sudah kedaluwarsa. Minta kode baru.', data: { expired: true } });
+    }
+    if (user.reset_otp !== code) {
+      return res.status(400).json({ success: false, message: 'Kode reset salah.', data: null });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await pool.query(
+      `UPDATE users SET password_hash = $1, reset_otp = NULL, reset_otp_expires_at = NULL WHERE id = $2`,
+      [passwordHash, user.id]
+    );
+
+    res.json({ success: true, message: 'Password berhasil diganti. Silakan login.', data: null });
+  } catch (err) {
+    console.error('🔴 Reset password error:', err.message);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server.', data: null });
   }
 });
 

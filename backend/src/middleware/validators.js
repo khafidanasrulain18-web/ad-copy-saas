@@ -27,6 +27,16 @@ export const resendOtpValidators = [
   body('email').isEmail().withMessage('Format email tidak valid.').normalizeEmail(),
 ];
 
+export const forgotPasswordValidators = [
+  body('email').isEmail().withMessage('Format email tidak valid.').normalizeEmail(),
+];
+
+export const resetPasswordValidators = [
+  body('email').isEmail().withMessage('Format email tidak valid.').normalizeEmail(),
+  body('code').isLength({ min: 6, max: 6 }).isNumeric().withMessage('Kode harus 6 digit angka.'),
+  body('newPassword').isLength({ min: 8 }).withMessage('Password baru minimal 8 karakter.'),
+];
+
 export const generateValidators = [
   body('productName').trim().isLength({ min: 1, max: 200 }).withMessage('Nama produk wajib diisi, maksimal 200 karakter.'),
   body('description').trim().isLength({ min: 1, max: 1000 }).withMessage('Deskripsi wajib diisi, maksimal 1000 karakter.'),

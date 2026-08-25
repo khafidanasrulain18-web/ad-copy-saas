@@ -93,11 +93,14 @@ export default function Login() {
               <input type="email" className="input-field" value={email}
                 onChange={(e) => setEmail(e.target.value)} required />
             </div>
-            <div>
-              <label className="label">Password</label>
-              <input type="password" className="input-field" value={password}
-                onChange={(e) => setPassword(e.target.value)} required />
-            </div>
+                    <div>
+          <label className="label">Password</label>
+          <input type="password" className="input-field" value={password}
+            onChange={(e) => setPassword(e.target.value)} required />
+          <div className="text-right mt-1.5">
+            <Link to="/forgot-password" className="text-xs text-ink-soft hover:text-gold">Lupa password?</Link>
+          </div>
+        </div>
             <button type="submit" disabled={loading} className="btn-primary w-full">
               {loading ? 'Memproses...' : 'Masuk'}
             </button>

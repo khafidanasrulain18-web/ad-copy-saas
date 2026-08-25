@@ -44,3 +44,18 @@ export const subscriptionApi = {
   plans: () => request('/subscription/plans'),
   checkout: (planId) => request('/subscription/checkout', { method: 'POST', body: JSON.stringify({ planId }) }),
 };
+export const authApi = {
+  register: (email, password) =>
+    request('/auth/register', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  login: (email, password) =>
+    request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  verifyEmail: (email, code) =>
+    request('/auth/verify-email', { method: 'POST', body: JSON.stringify({ email, code }) }),
+  resendOtp: (email) =>
+    request('/auth/resend-otp', { method: 'POST', body: JSON.stringify({ email }) }),
+  forgotPassword: (email) =>
+    request('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }),
+  resetPassword: (email, code, newPassword) =>
+    request('/auth/reset-password', { method: 'POST', body: JSON.stringify({ email, code, newPassword }) }),
+  me: () => request('/auth/me'),
+};

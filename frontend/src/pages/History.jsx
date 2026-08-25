@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { historyApi } from '../api/client';
+import { exportHistoryItemPdf, exportAllHistoryPdf } from '../utils/pdf';
 
 export default function History() {
   const [items, setItems] = useState([]);
@@ -17,7 +18,14 @@ export default function History() {
 
   return (
     <div>
-      <h1 className="text-3xl font-semibold mb-8">History</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-semibold">History</h1>
+        {items.length > 0 && (
+          <button onClick={() => exportAllHistoryPdf(items)} className="btn-secondary text-sm px-4 py-2">
+            Export Semua (PDF)
+          </button>
+        )}
+      </div>
 
       {items.length === 0 && (
         <div className="text-sm text-ink-soft border border-dashed border-border rounded-card p-8 text-center">
@@ -35,11 +43,14 @@ export default function History() {
               </p>
             </div>
             <p className="text-xs text-ink-soft mb-3">{item.input_brief?.platform} · {item.input_brief?.tone}</p>
-            <div className="space-y-2">
-                            {(item.output_results || []).map((text, i) => (
+            <div className="space-y-2 mb-3">
+              {(item.output_results || []).map((text, i) => (
                 <p key={i} className="text-sm text-ink-soft bg-white/[0.04] border border-white/5 rounded px-3 py-2">{text}</p>
               ))}
             </div>
+            <button onClick={() => exportHistoryItemPdf(item)} className="text-xs font-medium text-gold hover:text-gold-dim">
+              Unduh PDF
+            </button>
           </div>
         ))}
       </div>
