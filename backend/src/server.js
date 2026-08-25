@@ -15,7 +15,7 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 const { Pool } = pkg;
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
