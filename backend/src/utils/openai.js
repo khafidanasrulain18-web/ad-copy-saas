@@ -1,8 +1,10 @@
 import OpenAI from 'openai';
 
-// API key HANYA dibaca dari env, TIDAK PERNAH hardcoded, TIDAK PERNAH dikirim ke frontend
+// DeepSeek API kompatibel dengan format OpenAI — cukup ganti baseURL & apiKey.
+// Nama file/variable "openai" sengaja dipertahankan supaya import di file lain tidak perlu berubah.
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.DEEPSEEK_API_KEY,
+  baseURL: 'https://api.deepseek.com',
 });
 
 export default openai;

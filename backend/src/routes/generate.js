@@ -15,7 +15,6 @@ router.post('/', requireAuth, generateLimiter, generateValidators, handleValidat
     const { productName, description, audience, tone, platform, variations } = req.body;
     const numVariations = parseInt(variations, 10);
 
-    // ── CEK QUOTA DULU — SEBELUM PANGGIL OPENAI (WAJIB) ──
     const quota = await checkQuota(req.user.userId);
     if (!quota.allowed) {
       return res.status(403).json({
@@ -25,9 +24,8 @@ router.post('/', requireAuth, generateLimiter, generateValidators, handleValidat
       });
     }
 
-    // ── PANGGIL OPENAI ──
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'deepseek-chat', // model DeepSeek, setara gpt-4o-mini untuk kasus ini, jauh lebih murah
       max_tokens: MAX_TOKENS,
       messages: [
         { role: 'system', content: buildSystemPrompt() },
@@ -39,7 +37,10 @@ router.post('/', requireAuth, generateLimiter, generateValidators, handleValidat
     const results = rawOutput.split('---').map((s) => s.trim()).filter(Boolean);
 
     const tokensUsed = completion.usage?.total_tokens || 0;
-    const costEstimate = (tokensUsed / 1_000_000) * 0.375;
+    // Estimasi biaya DeepSeek-chat (per Jan 2026, cek harga terbaru di platform.deepseek.com/api-docs/pricing):
+    // ~$0.28/1M input, ~$0.42/1M output (cache miss) — jauh lebih murah dari gpt-4o-mini.
+    // Estimasi kasar gabungan dari total_tokens, cukup untuk monitoring internal.
+    const costEstimate = (tokensUsed / 1_000_000) * 0.35;
 
     await pool.query(
       `INSERT INTO usage_logs (user_id, tokens_used, cost_estimate, content_type, input_brief, output_results)
@@ -61,7 +62,7 @@ router.post('/', requireAuth, generateLimiter, generateValidators, handleValidat
   } catch (err) {
     console.error('🔴 Generate error:', err.message);
     if (err.status === 429) {
-      return res.status(429).json({ success: false, message: 'Server sedang sibuk atau limit OpenAI tercapai. Coba lagi sebentar.', data: null });
+      return res.status(429).json({ success: false, message: 'Server sedang sibuk atau limit tercapai. Coba lagi sebentar.', data: null });
     }
     res.status(500).json({ success: false, message: 'Gagal generate copy iklan.', data: null });
   }
