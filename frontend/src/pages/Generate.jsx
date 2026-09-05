@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { generateApi } from '../api/client';
 import QuotaIndicator from '../components/QuotaIndicator';
+import Spinner from '../components/Spinner';
 
 const TONES = ['santai', 'formal', 'persuasif', 'urgent'];
 const PLATFORMS = ['Instagram Ads', 'Facebook Ads', 'Google Ads', 'Umum'];
@@ -87,7 +88,8 @@ export default function Generate() {
               value={form.variations} onChange={(e) => update('variations', e.target.value)} />
           </div>
 
-          <button type="submit" disabled={loading} className="btn-primary">
+          <button type="submit" disabled={loading} className="btn-primary flex items-center gap-2">
+            {loading && <Spinner size={15} />}
             {loading ? 'Membuat...' : 'Generate →'}
           </button>
         </div>

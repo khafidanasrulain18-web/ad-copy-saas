@@ -1,7 +1,10 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import PageLoader from './components/PageLoader';
+import PageTransition from './components/PageTransition';
 
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
@@ -13,26 +16,30 @@ const History = lazy(() => import('./pages/History'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 
-function PageLoader() {
-  return <div className="text-center text-ink-soft py-20">Memuat...</div>;
+function wrap(element) {
+  return <PageTransition>{element}</PageTransition>;
 }
 
 export default function App() {
+  const location = useLocation();
+
   return (
     <Layout>
       <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/generate" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/generate" element={<ProtectedRoute><Generate /></ProtectedRoute>} />
-          <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} />
-        </Routes>
+        <AnimatePresence mode="wait" initial={false}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Navigate to="/generate" replace />} />
+            <Route path="/login" element={wrap(<Login />)} />
+            <Route path="/register" element={wrap(<Register />)} />
+            <Route path="/verify-email" element={wrap(<VerifyEmail />)} />
+            <Route path="/forgot-password" element={wrap(<ForgotPassword />)} />
+            <Route path="/reset-password" element={wrap(<ResetPassword />)} />
+            <Route path="/generate" element={<ProtectedRoute>{wrap(<Generate />)}</ProtectedRoute>} />
+            <Route path="/history" element={<ProtectedRoute>{wrap(<History />)}</ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute>{wrap(<Dashboard />)}</ProtectedRoute>} />
+            <Route path="/pricing" element={<ProtectedRoute>{wrap(<Pricing />)}</ProtectedRoute>} />
+          </Routes>
+        </AnimatePresence>
       </Suspense>
     </Layout>
   );

@@ -12,6 +12,9 @@
   ::selection {
     @apply bg-gold/20 text-ink;
   }
+  * {
+    @apply transition-colors duration-200;
+  }
 }
 
 @layer components {
