@@ -10,30 +10,30 @@
     @apply font-display;
   }
   ::selection {
-    @apply bg-gold/30 text-ink;
+    @apply bg-gold/20 text-ink;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-gold text-base font-semibold px-5 py-2.5 rounded-card
-           shadow-[0_0_24px_-4px_rgba(227,168,84,0.5)]
-           hover:bg-gold-dim transition-all disabled:opacity-40 disabled:cursor-not-allowed
+    @apply bg-ink text-base font-semibold px-5 py-2.5 rounded-full
+           shadow-[0_4px_20px_-4px_rgba(22,22,15,0.35)]
+           hover:bg-ink/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed
            disabled:shadow-none;
   }
   .btn-secondary {
-    @apply bg-white/5 backdrop-blur-md text-ink border border-white/10 font-medium px-5 py-2.5 rounded-card
-           hover:bg-white/10 transition-colors;
+    @apply bg-white/40 backdrop-blur-md text-ink border border-white/60 font-medium px-5 py-2.5 rounded-full
+           hover:bg-white/60 transition-colors;
   }
   .input-field {
-    @apply w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-card px-4 py-2.5 text-ink
-           placeholder:text-ink-soft/50 focus:outline-none focus:ring-1 focus:ring-gold/50 focus:border-gold/50
+    @apply w-full bg-white/50 backdrop-blur-md border border-white/60 rounded-xl px-4 py-2.5 text-ink
+           placeholder:text-ink-soft/50 focus:outline-none focus:ring-1 focus:ring-ink/20 focus:border-white/80
            transition-colors;
   }
   .card {
-    @apply bg-white/[0.06] backdrop-blur-xl border border-white/10 rounded-card p-6
-           shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]
-           transition-colors hover:bg-white/[0.09] hover:border-white/20;
+    @apply bg-white/10 backdrop-blur-xl border border-white/70 rounded-card p-9
+           shadow-[0_8px_32px_-12px_rgba(22,22,15,0.15)]
+           transition-colors hover:bg-white/60;
   }
   .label {
     @apply block text-xs uppercase tracking-wide font-medium text-ink-soft mb-2;

@@ -47,7 +47,7 @@ export default function Login() {
     <div className="grid lg:grid-cols-2 gap-16 items-start">
       {/* ── Kolom kiri: hero + fitur ── */}
       <div className="pt-2">
-        <div className="inline-flex items-center gap-2 text-xs font-medium text-teal bg-teal/10 border border-teal/20 rounded-full px-3 py-1 mb-6">
+        <div className="inline-flex items-center gap-2 text-xs font-medium text-teal bg-teal/10 border border-teal/60 rounded-full px-6 py-1 mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-teal" />
           Ditenagai GPT-4o mini
         </div>

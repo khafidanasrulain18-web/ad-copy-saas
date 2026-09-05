@@ -4,16 +4,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        base: '#0E0F12',
-        surface: '#17181C',
-        'surface-hover': '#1F2025',
-        border: '#2A2B31',
-        ink: '#F2F1ED',
-        'ink-soft': '#9A9A96',
-        gold: '#E3A854',
-        'gold-dim': '#B5854A',
-        teal: '#5FA8A0',
-        alert: '#E8604C',
+        base: '#FAFAF8',
+        surface: '#FFFFFF',
+        'surface-hover': '#F3F3EE',
+        border: '#E6E5DF',
+        ink: '#16160F',
+        'ink-soft': '#6E6D64',
+        gold: '#B8722A',
+        'gold-dim': '#8F5A1F',
+        teal: '#2F8F86',
+        alert: '#D6472F',
       },
       fontFamily: {
         display: ['"Space Grotesk"', 'sans-serif'],
@@ -21,7 +21,7 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       borderRadius: {
-        card: '12px',
+        card: '16px',
       },
     },
   },

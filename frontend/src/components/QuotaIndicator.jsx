@@ -11,11 +11,11 @@ export default function QuotaIndicator() {
   if (!quota) return null;
 
   return (
-    <div className="inline-flex items-center gap-3 bg-white/[0.06] backdrop-blur-xl border border-white/10 rounded-card pl-4 pr-1.5 py-1.5 mb-8">
+    <div className="inline-flex items-center gap-3 bg-white/50 backdrop-blur-xl border border-white/60 rounded-full pl-4 pr-1.5 py-1.5">
       <span className="text-xs text-ink-soft uppercase tracking-wide">
         {quota.unlimited ? 'Paid Plan' : 'Sisa generate'}
       </span>
-      <div className="font-mono text-sm text-gold bg-gold/10 px-2.5 py-0.5 rounded">
+      <div className="font-mono text-sm text-gold bg-gold/15 px-2.5 py-0.5 rounded-full">
         {quota.unlimited ? '∞' : quota.remaining}
       </div>
       {!quota.unlimited && !quota.canGenerate && (

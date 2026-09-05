@@ -1,11 +1,12 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Wand2, History as HistoryIcon, LayoutDashboard, CreditCard, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
-  { to: '/generate', label: 'Generate' },
-  { to: '/history', label: 'History' },
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/pricing', label: 'Pricing' },
+  { to: '/generate', label: 'Generate', icon: Wand2 },
+  { to: '/history', label: 'History', icon: HistoryIcon },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/pricing', label: 'Pricing', icon: CreditCard },
 ];
 
 export default function Layout({ children }) {
@@ -19,47 +20,48 @@ export default function Layout({ children }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* Blob gradient di belakang — sumber warna untuk efek kaca */}
+    <div className="min-h-screen flex relative overflow-hidden">
+      {/* Blob pastel di belakang — sumber warna untuk efek kaca */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -left-24 w-[32rem] h-[32rem] bg-gold/25 rounded-full blur-[120px]" />
-        <div className="absolute top-1/3 -right-24 w-[28rem] h-[28rem] bg-teal/25 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-1/4 w-[24rem] h-[24rem] bg-gold-dim/15 rounded-full blur-[120px]" />
+        <div className="absolute -top-24 -left-16 w-[30rem] h-[30rem] bg-gold/40 rounded-full blur-[100px]" />
+        <div className="absolute top-1/4 -right-20 w-[26rem] h-[26rem] bg-teal/30 rounded-full blur-[100px]" />
+        <div className="absolute bottom-5 left-3/3 w-[22rem] h-[22rem] bg-gold-dim/30 rounded-full blur-[100px]" />
       </div>
 
-      <header className="sticky top-0 z-10 backdrop-blur-xl bg-base/50 border-b border-white/10">
-        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
-          <Link to="/" className="font-display text-lg font-semibold tracking-tight">
-            AdCopy <span className="text-gold">●</span>
+      {user && (
+        <aside className="w-16 shrink-0 border-r border-white/50 bg-white/40 backdrop-blur-xl flex flex-col items-center py-5 gap-1 sticky top-0 h-screen">
+          <Link to="/generate" className="w-9 h-9 rounded-xl bg-ink text-base flex items-center justify-center font-display font-bold text-sm mb-6">
+            A
           </Link>
 
-          {user && (
-            <nav className="flex items-center gap-1">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`px-3 py-1.5 rounded-card text-sm font-medium transition-colors ${
-                    location.pathname === item.to
-                      ? 'text-gold bg-white/5'
-                      : 'text-ink-soft hover:text-ink hover:bg-white/5'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <button
-                onClick={handleLogout}
-                className="ml-2 px-3 py-1.5 rounded-card text-sm font-medium text-ink-soft hover:text-alert hover:bg-white/5 transition-colors"
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const active = location.pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                title={item.label}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                  active ? 'bg-gold/15 text-gold' : 'text-ink-soft hover:bg-white/50 hover:text-ink'
+                }`}
               >
-                Keluar
-              </button>
-            </nav>
-          )}
-        </div>
-      </header>
+                <Icon size={18} strokeWidth={2} />
+              </Link>
+            );
+          })}
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-14 relative z-0">{children}</main>
+          <button
+            onClick={handleLogout}
+            title="Keluar"
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-ink-soft hover:bg-alert/10 hover:text-alert transition-colors mt-auto"
+          >
+            <LogOut size={18} strokeWidth={2} />
+          </button>
+        </aside>
+      )}
+
+      <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-14 relative z-0">{children}</main>
     </div>
   );
 }

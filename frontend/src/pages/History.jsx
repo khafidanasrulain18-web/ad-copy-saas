@@ -44,8 +44,8 @@ export default function History() {
             </div>
             <p className="text-xs text-ink-soft mb-3">{item.input_brief?.platform} · {item.input_brief?.tone}</p>
             <div className="space-y-2 mb-3">
-              {(item.output_results || []).map((text, i) => (
-                <p key={i} className="text-sm text-ink-soft bg-white/[0.04] border border-white/5 rounded px-3 py-2">{text}</p>
+                {(item.output_results || []).map((text, i) => (
+                <p key={i} className="text-sm text-ink-soft bg-white/30 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2">{text}</p>
               ))}
             </div>
             <button onClick={() => exportHistoryItemPdf(item)} className="text-xs font-medium text-gold hover:text-gold-dim">
